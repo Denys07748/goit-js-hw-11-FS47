@@ -13,13 +13,11 @@ export default class PixabayApiService {
     return fetch(
       `${BASE_URL}/?key=${API_KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.page}&per_page=4`
     )
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(response.status);
-        }
-        return response.json();
-      })
+      .then(response => response.json())
       .then(data => {
+        // if (!data.ok) {
+        //   throw new Error(data.status);
+        // }
         console.log(data);
         this.incrementPage();
 
