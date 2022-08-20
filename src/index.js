@@ -11,24 +11,26 @@ const pixabayApiService = new PixabayApiService();
 console.log(pixabayApiService);
 
 refs.searchForm.addEventListener('submit', onSearch);
-refs.loadMore.addEventListener('click', onLoadMore);
+refs.button.addEventListener('click', onLoadMore);
 
 function onSearch(e) {
   e.preventDefault();
 
   clearImageContainer();
+  refs.button.classList.add('is-hidden');
   pixabayApiService.query = e.currentTarget.elements.searchQuery.value;
   pixabayApiService.resetPage();
-  if (pixabayApiService.searchQuery === '') {
+  if (pixabayApiService.query === '') {
     Notiflix.Notify.warning('The input field cannot be empty.');
     return;
   }
 
   pixabayApiService
     .fetchImages()
-    .then(hits => {
+    .then(data => {
       clearImageContainer();
-      renderCards(hits);
+      refs.button.classList.remove('is-hidden');
+      return renderCards(data);
     })
     .catch(fetchError);
 }

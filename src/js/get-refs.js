@@ -3,6 +3,6 @@ export default function getRefs() {
     searchForm: document.querySelector('#search-form'),
     container: document.querySelector('.container'),
     gallery: document.querySelector('.gallery'),
-    loadMore: document.querySelector('.load-more'),
+    button: document.querySelector('.button'),
   };
 }

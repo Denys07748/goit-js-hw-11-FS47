@@ -14,17 +14,21 @@ export default class PixabayApiService {
       `${BASE_URL}/?key=${API_KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.page}&per_page=4`
     )
       .then(response => {
-        response.json();
-      })
-      .then(data => {
         if (!response.ok) {
           throw new Error(response.status);
         }
+        return response.json();
+      })
+      .then(data => {
         console.log(data);
-        this.page += 1;
+        this.incrementPage();
 
         return data.hits;
       });
+  }
+
+  incrementPage() {
+    this.page += 1;
   }
 
   resetPage() {
