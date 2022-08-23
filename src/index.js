@@ -3,6 +3,8 @@ import PixabayApiService from './js/pixabay-service';
 import getRefs from './js/get-refs';
 import renderCards from './js/render-cards';
 import Notiflix from 'notiflix';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const refs = getRefs();
 
@@ -11,32 +13,31 @@ const pixabayApiService = new PixabayApiService();
 console.log(pixabayApiService);
 
 refs.searchForm.addEventListener('submit', onSearch);
-refs.button.addEventListener('click', onLoadMore);
+refs.loadMore.addEventListener('click', fetchImages);
 
 function onSearch(e) {
   e.preventDefault();
 
   clearImageContainer();
-  refs.button.classList.add('is-hidden');
+  refs.loadMore.classList.add('is-hidden');
   pixabayApiService.query = e.currentTarget.elements.searchQuery.value;
   pixabayApiService.resetPage();
   if (pixabayApiService.query === '') {
     Notiflix.Notify.warning('The input field cannot be empty.');
     return;
   }
-
-  pixabayApiService
-    .fetchImages()
-    .then(data => {
-      clearImageContainer();
-      refs.button.classList.remove('is-hidden');
-      return renderCards(data);
-    })
-    .catch(fetchError);
+  refs.loadMore.classList.remove('is-hidden');
+  fetchImages();
 }
 
-function onLoadMore() {
-  pixabayApiService.fetchImages().then(renderCards);
+function fetchImages() {
+  refs.loadMore.disabled = true;
+  pixabayApiService.fetchImages().then(data => {
+    renderCards(data);
+    refs.loadMore.disabled = false;
+
+    // if(data.totalHits )
+  });
 }
 
 function clearImageContainer() {
