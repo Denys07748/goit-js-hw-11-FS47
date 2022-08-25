@@ -14,7 +14,7 @@ export default function renderCards(data) {
         comments,
         downloads,
       }) =>
-        `<div class="photo-card item">
+        `<a class="photo-card item" href="${largeImageURL}">
             <div class="image-wrapper">
                 <img src="${webformatURL}" alt="${tags}" loading="lazy" />
             </div>
@@ -32,7 +32,7 @@ export default function renderCards(data) {
                 <b>Downloads</br>${downloads}</b>
                 </p>
             </div>
-        </div>`
+        </a>`
     )
     .join('');
 
