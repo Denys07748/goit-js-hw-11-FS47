@@ -29,36 +29,29 @@ function onSearch(e) {
 
   refs.loadMore.classList.remove('is-hidden');
   fetchImages();
-
-  setTimeout(() => {
-    Notiflix.Notify.info(`Hooray! We found ${pixabayApiService.total} images.`);
-  }, 300);
 }
 
 function fetchImages() {
   refs.loadMore.disabled = true;
 
-  pixabayApiService.fetchImages().then(data => {
-    renderCards(data);
-    refs.loadMore.disabled = false;
-    lightbox();
+  pixabayApiService
+    .fetchImages()
+    .then(data => {
+      renderCards(data);
+      refs.loadMore.disabled = false;
+      lightbox();
 
-    console.log(
-      pixabayApiService.page,
-      pixabayApiService.per_page,
-      pixabayApiService.total
-    );
-
-    if (
-      pixabayApiService.page * pixabayApiService.per_page >
-      pixabayApiService.total
-    ) {
-      Notiflix.Notify.info(
-        "We're sorry, but you've reached the end of search results."
-      );
-      refs.loadMore.classList.add('is-hidden');
-    }
-  });
+      if (
+        pixabayApiService.page * pixabayApiService.per_page >
+        pixabayApiService.total
+      ) {
+        Notiflix.Notify.info(
+          "We're sorry, but you've reached the end of search results."
+        );
+        refs.loadMore.classList.add('is-hidden');
+      }
+    })
+    .catch(error => console.log(error));
 }
 
 function lightbox() {
@@ -68,7 +61,7 @@ function lightbox() {
   });
 
   // const gallery = $('.gallery a').simpleLightbox();
-  gallery.refresh();
+  // gallery.refresh();
 
   return lightbox;
 }
