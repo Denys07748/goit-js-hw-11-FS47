@@ -37,8 +37,6 @@ export default class PixabayApiService {
 
         this.total = data.totalHits;
 
-        Notiflix.Notify.info(`Hooray! We found ${this.total} images.`);
-
         setTimeout(() => {
           this.incrementPage();
         }, 500);

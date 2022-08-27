@@ -29,6 +29,14 @@ function onSearch(e) {
 
   refs.loadMore.classList.remove('is-hidden');
   fetchImages();
+
+  setTimeout(() => {
+    if (pixabayApiService.total !== 0) {
+      Notiflix.Notify.info(
+        `Hooray! We found ${pixabayApiService.total} images.`
+      );
+    }
+  }, 500);
 }
 
 function fetchImages() {
