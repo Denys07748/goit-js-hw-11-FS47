@@ -15,13 +15,14 @@ const pixabayApiService = new PixabayApiService();
 refs.searchForm.addEventListener('submit', onSearch);
 refs.loadMore.addEventListener('click', fetchImages);
 
-function onSearch(e) {
+async function onSearch(e) {
   e.preventDefault();
 
   clearImageContainer();
   refs.loadMore.classList.add('is-hidden');
   pixabayApiService.query = e.currentTarget.elements.searchQuery.value;
   pixabayApiService.resetPage();
+  pixabayApiService.resetTotal();
   if (pixabayApiService.query === '') {
     Notiflix.Notify.warning('The input field cannot be empty.');
     return;
@@ -39,27 +40,57 @@ function onSearch(e) {
   }, 500);
 }
 
-function fetchImages() {
+// function fetchImages() {
+//   refs.loadMore.disabled = true;
+
+//   pixabayApiService
+//     .fetchImages()
+//     .then(data => {
+//       renderCards(data);
+//       refs.loadMore.disabled = false;
+//       lightbox();
+
+//       console.log(pixabayApiService.page);
+//       if (
+//         pixabayApiService.page * pixabayApiService.per_page >
+//         pixabayApiService.total
+//       ) {
+//         Notiflix.Notify.info(
+//           "We're sorry, but you've reached the end of search results."
+//         );
+//         refs.loadMore.classList.add('is-hidden');
+//       }
+
+//       pixabayApiService.incrementPage();
+//     })
+//     .catch(error => console.log(error));
+// }
+
+async function fetchImages() {
   refs.loadMore.disabled = true;
 
-  pixabayApiService
-    .fetchImages()
-    .then(data => {
-      renderCards(data);
-      refs.loadMore.disabled = false;
-      lightbox();
+  try {
+    const dataHits = await pixabayApiService.fetchImages();
+    renderCards(dataHits);
 
-      if (
-        pixabayApiService.page * pixabayApiService.per_page >
-        pixabayApiService.total
-      ) {
-        Notiflix.Notify.info(
-          "We're sorry, but you've reached the end of search results."
-        );
-        refs.loadMore.classList.add('is-hidden');
-      }
-    })
-    .catch(error => console.log(error));
+    refs.loadMore.disabled = false;
+    lightbox();
+
+    console.log(pixabayApiService.page);
+    if (
+      pixabayApiService.page * pixabayApiService.per_page >
+      pixabayApiService.total
+    ) {
+      Notiflix.Notify.info(
+        "We're sorry, but you've reached the end of search results."
+      );
+      refs.loadMore.classList.add('is-hidden');
+    }
+
+    pixabayApiService.incrementPage();
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function lightbox() {
