@@ -2,7 +2,6 @@ import Notiflix from 'notiflix';
 import axios from 'axios';
 
 const BASE_URL = 'https://pixabay.com/api';
-// const API_KEY = '29295423-17b569e792d85c50ff51a3d1b';
 
 export default class PixabayApiService {
   constructor() {
@@ -33,11 +32,6 @@ export default class PixabayApiService {
     }
 
     this.total = response.data.totalHits;
-    console.log(this.total);
-
-    // setTimeout(() => {
-    //   this.incrementPage();
-    // }, 500);
 
     return response.data.hits;
   }
