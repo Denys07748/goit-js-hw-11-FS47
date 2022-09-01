@@ -2,6 +2,7 @@ import './sass/index.scss';
 import PixabayApiService from './js/pixabay-service';
 import getRefs from './js/get-refs';
 import renderCards from './js/render-cards';
+import LoadMoreBtn from './js/load-more-btn';
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
@@ -9,15 +10,19 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 const refs = getRefs();
 
 const pixabayApiService = new PixabayApiService();
+const loadMoreBtn = new LoadMoreBtn({ selector: '.load-more', hidden: true });
+
+console.log(loadMoreBtn);
 
 refs.searchForm.addEventListener('submit', onSearch);
-refs.loadMore.addEventListener('click', fetchImages);
+loadMoreBtn.refs.button.addEventListener('click', fetchImages);
 
 async function onSearch(e) {
   e.preventDefault();
 
   clearImageContainer();
-  refs.loadMore.classList.add('is-hidden');
+  // refs.loadMore.classList.add('is-hidden');
+  loadMoreBtn.hide();
   pixabayApiService.query = e.currentTarget.elements.searchQuery.value.trim();
   pixabayApiService.resetPage();
   pixabayApiService.resetTotal();
@@ -26,7 +31,8 @@ async function onSearch(e) {
     return;
   }
 
-  refs.loadMore.classList.remove('is-hidden');
+  // refs.loadMore.classList.remove('is-hidden');
+  loadMoreBtn.show();
   const rend = await fetchImages();
 
   if (pixabayApiService.total !== 0) {
@@ -34,40 +40,15 @@ async function onSearch(e) {
   }
 }
 
-// function fetchImages() {
-//   refs.loadMore.disabled = true;
-
-//   pixabayApiService
-//     .fetchImages()
-//     .then(data => {
-//       renderCards(data);
-//       refs.loadMore.disabled = false;
-//       lightbox();
-
-//       console.log(pixabayApiService.page);
-//       if (
-//         pixabayApiService.page * pixabayApiService.per_page >
-//         pixabayApiService.total
-//       ) {
-//         Notiflix.Notify.info(
-//           "We're sorry, but you've reached the end of search results."
-//         );
-//         refs.loadMore.classList.add('is-hidden');
-//       }
-
-//       pixabayApiService.incrementPage();
-//     })
-//     .catch(error => console.log(error));
-// }
-
 async function fetchImages() {
-  refs.loadMore.disabled = true;
+  // refs.loadMore.disabled = true;
+  loadMoreBtn.disable();
 
   try {
     const dataHits = await pixabayApiService.fetchImages();
     renderCards(dataHits);
 
-    refs.loadMore.disabled = false;
+    loadMoreBtn.enable();
     lightbox();
 
     if (
@@ -77,7 +58,8 @@ async function fetchImages() {
       Notiflix.Notify.info(
         "We're sorry, but you've reached the end of search results."
       );
-      refs.loadMore.classList.add('is-hidden');
+      // refs.loadMore.classList.add('is-hidden');
+      loadMoreBtn.hide();
     }
 
     pixabayApiService.incrementPage();
