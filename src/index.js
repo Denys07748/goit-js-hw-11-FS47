@@ -12,8 +12,6 @@ const refs = getRefs();
 const pixabayApiService = new PixabayApiService();
 const loadMoreBtn = new LoadMoreBtn({ selector: '.load-more', hidden: true });
 
-console.log(loadMoreBtn);
-
 refs.searchForm.addEventListener('submit', onSearch);
 loadMoreBtn.refs.button.addEventListener('click', fetchImages);
 
@@ -21,7 +19,6 @@ async function onSearch(e) {
   e.preventDefault();
 
   clearImageContainer();
-  // refs.loadMore.classList.add('is-hidden');
   loadMoreBtn.hide();
   pixabayApiService.query = e.currentTarget.elements.searchQuery.value.trim();
   pixabayApiService.resetPage();
@@ -31,17 +28,17 @@ async function onSearch(e) {
     return;
   }
 
-  // refs.loadMore.classList.remove('is-hidden');
   loadMoreBtn.show();
   const rend = await fetchImages();
 
   if (pixabayApiService.total !== 0) {
     Notiflix.Notify.info(`Hooray! We found ${pixabayApiService.total} images.`);
+  } else {
+    loadMoreBtn.hide();
   }
 }
 
 async function fetchImages() {
-  // refs.loadMore.disabled = true;
   loadMoreBtn.disable();
 
   try {
@@ -58,7 +55,6 @@ async function fetchImages() {
       Notiflix.Notify.info(
         "We're sorry, but you've reached the end of search results."
       );
-      // refs.loadMore.classList.add('is-hidden');
       loadMoreBtn.hide();
     }
 
