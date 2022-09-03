@@ -8,9 +8,9 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const refs = getRefs();
-
 const pixabayApiService = new PixabayApiService();
 const loadMoreBtn = new LoadMoreBtn({ selector: '.load-more', hidden: true });
+const gallery = lightbox();
 
 refs.searchForm.addEventListener('submit', onSearch);
 loadMoreBtn.refs.button.addEventListener('click', fetchImages);
@@ -29,7 +29,8 @@ async function onSearch(e) {
   }
 
   loadMoreBtn.show();
-  const rend = await fetchImages();
+  lightbox();
+  const fetchImage = await fetchImages();
 
   if (pixabayApiService.total !== 0) {
     Notiflix.Notify.info(`Hooray! We found ${pixabayApiService.total} images.`);
@@ -46,7 +47,7 @@ async function fetchImages() {
     renderCards(dataHits);
 
     loadMoreBtn.enable();
-    lightbox();
+    gallery.refresh();
 
     if (
       pixabayApiService.page * pixabayApiService.per_page >
@@ -69,9 +70,6 @@ function lightbox() {
     captionsData: 'alt',
     captionDelay: 250,
   });
-
-  // const gallery = $('.gallery a').simpleLightbox();
-  // gallery.refresh();
 
   return lightbox;
 }
